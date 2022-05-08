@@ -1,7 +1,9 @@
 <template>
   <div>
     <div v-for="home in homes" :key="home.objectID" class="home">
-      <HomeCard :home="home" />
+      <NuxtLink :to="`/home/${home.objectID}`">
+        <HomeCard :home="home" />
+      </NuxtLink>
     </div>
   </div>
 </template>
