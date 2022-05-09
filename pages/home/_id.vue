@@ -28,18 +28,28 @@
 
 <script>
 export default {
-  async asyncData({ params, $dataApi }) {
-    const home = await $dataApi.getHome(params.id)
+  async asyncData({ params, $dataApi, error }) {
+    const response = await $dataApi.getHome(params.id)
 
-    return { home }
+    if (!response.ok)
+      return error({
+        statusCode: response.status,
+        message: response.statusText
+      })
+
+    return { home: response.json }
   },
   head() {
     return {
-      title: this.home.title,
+      title: this.home.title
     }
   },
   mounted() {
-    this.$maps.showMap(this.$refs.map, this.home._geoloc.lat, this.home._geoloc.lng)
+    this.$maps.showMap(
+      this.$refs.map,
+      this.home._geoloc.lat,
+      this.home._geoloc.lng
+    )
   }
 }
 </script>
