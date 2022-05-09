@@ -22,6 +22,7 @@
       {{ home.guests }} guests, {{ home.bedrooms }} rooms, {{ home.beds }} beds,
       {{ home.bathrooms }} bath
     </p>
+    <div ref="map" class="map"></div>
   </div>
 </template>
 
@@ -36,13 +37,30 @@ export default {
   },
   head() {
     return {
-      title: this.home.title
+      title: this.home.title,
+      script: [{
+        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDoadQ7D6GvTh5xCQ2ee8F1R-KsN-ij8&libraries=places',
+        hid: 'map',
+        defer: true
+      }]
     }
   },
   created() {
     const home = homes.find((home) => home.objectID === this.$route.params.id)
     this.home = home
-  }
+  },
+  mounted() {
+    const options = {
+      zoom: 18,
+      center: new window.google.maps.LatLng(this.home._geoloc.lat, this.home._geoloc.lng),
+      disableDefaultUI: true,
+      zoomControl: true
+    }
+    const map = new window.google.maps.Map(this.$refs.map, options)
+    const position = new window.google.maps.LatLng(this.home._geoloc.lat, this.home._geoloc.lng)
+    const marker = new window.google.maps.Marker({ position })
+    marker.setMap(map)
+  },
 }
 </script>
 
@@ -52,5 +70,10 @@ export default {
     height: 20px;
     width: 20px;
   }
+}
+
+.map {
+  height: 800px;
+  width: 800px;
 }
 </style>
