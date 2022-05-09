@@ -38,11 +38,18 @@ export default {
   head() {
     return {
       title: this.home.title,
-      script: [{
-        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDoadQ7D6GvTh5xCQ2ee8F1R-KsN-ij8&libraries=places',
+      script: [
+      {
+        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDoadQ7D6GvTh5xCQ2ee8F1R-KsN-ij8&libraries=places&callback=initMap',
         hid: 'map',
-        defer: true
-      }]
+        defer: true,
+        skip: process.client && window.mapLoaded
+      },
+      {
+        innerHTML: "window.initMap = function(){ window.mapLoaded = true }",
+        hid: 'map-init'
+      }
+      ]
     }
   },
   created() {
