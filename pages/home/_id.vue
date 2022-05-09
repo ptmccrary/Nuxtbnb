@@ -39,16 +39,16 @@ export default {
     return {
       title: this.home.title,
       script: [
-      {
-        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDoadQ7D6GvTh5xCQ2ee8F1R-KsN-ij8&libraries=places&callback=initMap',
-        hid: 'map',
-        defer: true,
-        skip: process.client && window.mapLoaded
-      },
-      {
-        innerHTML: "window.initMap = function(){ window.mapLoaded = true }",
-        hid: 'map-init'
-      }
+        {
+          src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNDoadQ7D6GvTh5xCQ2ee8F1R-KsN-ij8&libraries=places&callback=initMap',
+          hid: 'map',
+          defer: true,
+          skip: process.client && window.mapLoaded
+        },
+        {
+          innerHTML: 'window.initMap = function(){ window.mapLoaded = true }',
+          hid: 'map-init'
+        }
       ]
     }
   },
@@ -57,17 +57,33 @@ export default {
     this.home = home
   },
   mounted() {
-    const options = {
-      zoom: 18,
-      center: new window.google.maps.LatLng(this.home._geoloc.lat, this.home._geoloc.lng),
-      disableDefaultUI: true,
-      zoomControl: true
-    }
-    const map = new window.google.maps.Map(this.$refs.map, options)
-    const position = new window.google.maps.LatLng(this.home._geoloc.lat, this.home._geoloc.lng)
-    const marker = new window.google.maps.Marker({ position })
-    marker.setMap(map)
+    const timer = setInterval(() => {
+      if (window.mapLoaded) {
+        clearInterval(timer)
+        this.showMap()
+      }
+    }, 200)
   },
+  methods: {
+    showMap() {
+      const options = {
+        zoom: 18,
+        center: new window.google.maps.LatLng(
+          this.home._geoloc.lat,
+          this.home._geoloc.lng
+        ),
+        disableDefaultUI: true,
+        zoomControl: true
+      }
+      const map = new window.google.maps.Map(this.$refs.map, options)
+      const position = new window.google.maps.LatLng(
+        this.home._geoloc.lat,
+        this.home._geoloc.lng
+      )
+      const marker = new window.google.maps.Marker({ position })
+      marker.setMap(map)
+    }
+  }
 }
 </script>
 
